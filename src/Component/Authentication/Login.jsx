@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import './Login.css';  // Custom CSS for additional styling
 
 const Login = () => {
@@ -6,10 +6,14 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [animate,setAnimate] = useState(false)
+  
 
   const toggleForm = () => {
+    setAnimate(true); // Trigger animation
     setIsLogin(!isLogin);
-  };
+    setTimeout(() => setAnimate(false), 500);
+  }
 
   const handleLogin = event => {
     event.preventDefault();
@@ -19,9 +23,10 @@ const Login = () => {
     event.preventDefault();
   };
 
+
   return (
     <div className='d-flex justify-content-center align-items-center vh-100'>
-      <div className='card p-4 shadow' style={{ minWidth: '400px', maxWidth: '500px', borderRadius: '15px' }}>
+      <div className={`card p-4 shadow ${animate ? 'fade-in' : ''}`} style={{ minWidth: '400px', maxWidth: '500px', borderRadius: '15px' }}>
         <h2 className='text-center'>{isLogin ? 'Login' : 'SignUp'}</h2>
         {isLogin ? (
           <form onSubmit={handleLogin}>
@@ -65,9 +70,10 @@ const Login = () => {
               />
             </div>
             <div className='mb-3'>
-              <label>Password</label>
+              <label htmlFor='loginPassword'>Password</label>
               <input
                 type="password"
+                id='loginPassword'
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className='form-control'
