@@ -1,0 +1,28 @@
+body {
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+ 
+ .btn-primary {
+    transition: background-color 0.3s, transform 0.3s;
+}
+.btn-primary:hover {
+    
+    background-color: #0056b3; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+  
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.9); /* White with transparency */
+    backdrop-filter: blur(10px); /* Blur effect */
+    border-radius: 15px; /* Rounded corners for the card */
+  }
+  
+  .input-group-text {
+    background-color: #007bff; /* Primary color */
+    color: white; /* White icon color */
+  }
+  
+ 
+  
