@@ -2,7 +2,11 @@ body {
     background: linear-gradient(to right, #6a11cb, #2575fc);
 }
 
- 
+.form-control:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
+}
+
  .btn-primary {
     transition: background-color 0.3s, transform 0.3s;
 }
@@ -10,7 +14,6 @@ body {
     
     background-color: #0056b3; /* Darker shade on hover */
     transform: scale(1.05); /* Slightly enlarge on hover */
-  
 }
 
 .card {
