@@ -1,0 +1,18 @@
+/* Full screen layout */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+
+  
+  /* Chat section: Chat List and Chat View side by side */
+  .chat-section {
+    display: flex;
+    flex: 1;  
+    overflow: hidden;
+  }
+  
+
+  

@@ -1,7 +1,6 @@
-body {
+.login {
     background: linear-gradient(to right, #6a11cb, #2575fc);
 }
-
 
 .card {
     background: rgba(255, 255, 255, 0.9); 
@@ -11,10 +10,11 @@ body {
     position: relative; 
     z-index: 1; 
     transition: 0.3s;
-    
-    animation: fadeIn 1s ease-in-out; /* Apply fade-in animation */
 }
 
+.animate{
+    animation: fadeIn 1s ease-in-out; /* Apply fade-in animation */
+}
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -26,7 +26,7 @@ body {
     }
 }
 
-.card:hover{
+.animate:hover{
     transform: translateY(-5px);
 }
 
@@ -50,3 +50,16 @@ body {
     background-color: #007bff; 
     color: white; 
 }
+
+.success-messages {
+    font-weight: bold; /* Makes the text bold */
+    font-size: 1.5em; /* Increases the font size */
+    color: green; /* Sets the text color to green */
+    /* margin-top: 10px; Adds space above the message */
+    text-align: center; /* Centers the text */
+    /* background-color: rgba(0, 255, 0, 0.1); Adds a light green background */
+    /* border: 1px solid green; Adds a green border */
+    /* padding: 10px; Adds padding around the text */
+    /* border-radius: 5px; Rounds the corners */
+  }
+  
