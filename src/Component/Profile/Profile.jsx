@@ -34,110 +34,40 @@ const Profile = ({ setView }) => {
   };
 
 
-  // const Submit = async (event) => {
-  //   event.preventDefault();
-
-  //   // clear previous message
-  //   setSuccessMessage('')
-  //   setErrorMessage('')
-
-  //   const profileData = {
-  //     profilePicture: base64String,
-  //     name: name,
-  //     about: about,
-  //     phone: phone,
-  //     authId: authId
-  //   };
-
-  //   if (!name.trim() || !phone.trim()) {
-  //     alert('Please fill out all required fields.');
-  //     return;
-  //   }
-
-
-  //   axios.post('http://127.0.0.1:4001/Profile/add', profileData)
-  //     .then((response) => {
-  //       console.log(response.data.profile); // The profile data sent from the backend
-
-  //       const { isRegistered } = response.data.profile; // Assuming backend returns isRegistered in response
-
-  //       // If the profile is registered, proceed with status update and navigation
-  //       if (isRegistered) {
-  //         axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.profile._id}`, {
-  //           online: true,
-  //           lastSeen: null
-  //         })
-
-  //           // Update status and last seen after profile setup
-  //           // axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.profile._id}`, {
-  //           //   online: true,
-  //           //   lastSeen: null
-  //           // })
-  //           .then(() => {
-
-  //             setSuccessMessage('Contact saved  successfully!');
-  //             setTimeout(() => {
-  //               navigate('/app/chats');
-  //               setView(true);
-  //             }, 2000);
-  //           })
-  //           .catch((error) => {
-  //             console.error('Error updating status:', error);
-  //             setErrorMessage('Profile saved, but there was an issue updating online status.');
-  //           });
-  //       })
-  //     .catch((error) => {
-  //       console.error('Error saving profile:', error);
-  //       setErrorMessage('There was an error saving your profile. Please try again.');
-  //     });
-  // };
-
-
-  // navigate('/app/chats'); // Redirect to chat after successful operation
-  // setView(true)
-
   const Submit = async (event) => {
     event.preventDefault();
-  
-    // clear previous message
-    setSuccessMessage('');
-    setErrorMessage('');
 
-      // Ensure `authId` is not null
-      if (!authId) {
-        setErrorMessage("User ID is missing. Please check your login status.");
-        return;
-    }
-  
+    // clear previous message
+    setSuccessMessage('')
+    setErrorMessage('')
+
     const profileData = {
       profilePicture: base64String,
       name: name,
       about: about,
       phone: phone,
-      authId: authId,
-      isRegistered: true  // Explicitly set this field to true
+      authId: authId
     };
-  
+
     if (!name.trim() || !phone.trim()) {
       alert('Please fill out all required fields.');
       return;
     }
-  
+
+
     axios.post('http://127.0.0.1:4001/Profile/add', profileData)
       .then((response) => {
-        console.log(response.data.profile,"Profile"); // The profile data sent from the backend
+        console.log(response.data.profile); // The profile data sent from the backend
         localStorage.setItem('profileId',response.data.profile._id)
-  
-        const { isRegistered } = response.data.profile; // Assuming backend returns isRegistered in response
-  
-        // If the profile is registered, proceed with status update and navigation
-        if (isRegistered) {
-          axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.profile._id}`, {
-            online: true,
-            lastSeen: null
-          })
+
+            // Update status and last seen after profile setup
+            axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.profile._id}`, {
+              online: true,
+              lastSeen: null
+            })
             .then(() => {
-              setSuccessMessage('Profile saved successfully!');
+
+              setSuccessMessage('Contact saved  successfully!');
               setTimeout(() => {
                 navigate('/app/chats');
                 setView(true);
@@ -147,19 +77,83 @@ const Profile = ({ setView }) => {
               console.error('Error updating status:', error);
               setErrorMessage('Profile saved, but there was an issue updating online status.');
             });
-        } else {
-          setErrorMessage('Profile is not registered. Please complete registration.');
-        }
-      })
-      .catch ((error)=>{
-        if (error.response && error.response.status === 409) {
-            setErrorMessage("Profile already exists for this user.");
-            // window.location.href = `/Profile/update/${authId}`
-        } else {
-            setErrorMessage("An error occurred while creating the profile.");
-        }
-      })
+        })
+      .catch((error) => {
+        console.error('Error saving profile:', error);
+        setErrorMessage('There was an error saving your profile. Please try again.');
+      });
   };
+
+
+  // navigate('/app/chats'); // Redirect to chat after successful operation
+  // setView(true)
+
+  // const Submit = async (event) => {
+  //   event.preventDefault();
+  
+  //   // clear previous message
+  //   setSuccessMessage('');
+  //   setErrorMessage('');
+
+  //     // Ensure `authId` is not null
+  //     if (!authId) {
+  //       setErrorMessage("User ID is missing. Please check your login status.");
+  //       return;
+  //   }
+  
+  //   const profileData = {
+  //     profilePicture: base64String,
+  //     name: name,
+  //     about: about,
+  //     phone: phone,
+  //     authId: authId,
+  //     // isRegistered: true  // Explicitly set this field to true
+  //   };
+  
+  //   if (!name.trim() || !phone.trim()) {
+  //     alert('Please fill out all required fields.');
+  //     return;
+  //   }
+
+  //   console.log("first")
+  
+  //   axios.post('http://127.0.0.1:4001/Profile/add', profileData)
+  //     .then((response) => {
+  //       console.log(response.data.profile,"Profile"); // The profile data sent from the backend
+  //       localStorage.setItem('profileId',response.data.profile._id)
+  
+  //       const { isRegistered } = response.data.profile; // Assuming backend returns isRegistered in response
+  
+  //       // If the profile is registered, proceed with status update and navigation
+  //       if (isRegistered) {
+  //         axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.profile._id}`, {
+  //           online: true,
+  //           lastSeen: null
+  //         })
+  //           .then(() => {
+  //             setSuccessMessage('Profile saved successfully!');
+  //             setTimeout(() => {
+  //               navigate('/app/chats');
+  //               setView(true);
+  //             }, 2000);
+  //           })
+  //           .catch((error) => {
+  //             console.error('Error updating status:', error);
+  //             setErrorMessage('Profile saved, but there was an issue updating online status.');
+  //           });
+  //       } else {
+  //         setErrorMessage('Profile is not registered. Please complete registration.');
+  //       }
+  //     })
+  //     .catch ((error)=>{
+  //       if (error.response && error.response.status === 409) {
+  //           setErrorMessage("Profile already exists for this user.");
+  //           // window.location.href = `/Profile/update/${authId}`
+  //       } else {
+  //           setErrorMessage("An error occurred while creating the profile.");
+  //       }
+  //     })
+  // };
   
 
 

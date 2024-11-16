@@ -20,8 +20,6 @@ const Navbar = ({setView}) => {
     phone: '',
     about: '',
   });
-  console.log("Profile Data:", profileData);
-
   const [base64String, setBase64String] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
