@@ -3,14 +3,14 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import axios from 'axios';
 import InputEmoji from 'react-input-emoji';
-import menu1 from '../Images/menu1.png';
+import menu from '../Images/menu.png';
 import comment from '../Images/comment.png';
 import grp from '../Images/grp.png';
 import placeholder from '../Images/placeholder.png';
 import setting from '../Images/setting.png';
 import logout from '../Images/logout.png';
 
-const Navbar = ({setView}) => {
+const Navbar = ({ setView }) => {
   const navigate = useNavigate();
   const authId = localStorage.getItem('authId');
   const profileId = localStorage.getItem('profileId')
@@ -31,12 +31,14 @@ const Navbar = ({setView}) => {
       setIsLoading(true)
       axios.get(`http://127.0.0.1:4001/Profile/get/${authId}`)
         .then(response => {
-          console.log(response.data,"Profile")
+          console.log(response.data, "Profile")
+          console.log(response.data.profileId,"ID")
+          localStorage.setItem(response.data.profileId,'profileId')
           setProfileData(response.data); // Set specific user's data
           setIsLoading(false); // Once data is fetched, set loading to false
         })
         .catch(error => console.error('Error fetching user profile:', error));
-        setIsLoading(false); 
+      setIsLoading(false);
     }
   }, [authId]);
 
@@ -75,7 +77,7 @@ const Navbar = ({setView}) => {
 
     localStorage.removeItem('authId');
     localStorage.removeItem('profileId')
-    localStorage.removeItem('Bearer'); 
+    localStorage.removeItem('Bearer');
     localStorage.removeItem('refresh_token');
     navigate('/login');
     setView(false)
@@ -99,7 +101,7 @@ const Navbar = ({setView}) => {
         name: profileData.name,
         phone: profileData.phone,
         about: profileData.about,
-        profilePicture: profileData.profilePicture , // Handle image if updated
+        profilePicture: profileData.profilePicture, // Handle image if updated
       };
 
       // Send a PATCH request to update the profile, using only the updated fields
@@ -110,20 +112,17 @@ const Navbar = ({setView}) => {
     }
   };
 
-
-
-
-    // Render the modal content only when profile data is available
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
+  // Render the modal content only when profile data is available
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
 
   return (
-    <div className={`navbar-container d-flex flex-column justify-content-between align-items-center ${isExpanded ? 'expanded' : ''}`}>
+    <div className={`nav navbar-container d-flex flex-column justify-content-between align-items-center ${isExpanded ? 'expanded' : ''}`}>
       {/* Menu Icon */}
       <div className="navbar-top" onClick={handleMenuToggle}>
-        <img src={menu1} alt="Menu" className="navbar-menu-icon" />
+        <img src={menu} alt="Menu" className="navbar-menu-icon" />
       </div>
 
       {/* Nav Items */}
@@ -155,15 +154,19 @@ const Navbar = ({setView}) => {
       </div>
 
       {/* Profile Section */}
-      <div className="profile-pic-container">
-        <img
-          src={profileData.profilePicture}
-          alt="Profile"
-          className="profile-pic"
-          onClick={handleShowModal}
-        />
+      <div style={{display:'flex'}}>
+        <div className="profile-pic-container">
+          <img
+            src={profileData.profilePicture}
+            alt="Profile"
+            className="profile-pic"
+            onClick={handleShowModal}
+          />
+
+        </div>
         {isExpanded && <span>Profile</span>}
       </div>
+
 
       {/* Modal */}
       {showModal && (

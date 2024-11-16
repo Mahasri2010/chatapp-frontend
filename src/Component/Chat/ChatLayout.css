@@ -4,7 +4,6 @@
 .chat-layout {
     display: flex;
     height: 100vh;
-    background-color: #eae6df;
     overflow: hidden;
   }
 
