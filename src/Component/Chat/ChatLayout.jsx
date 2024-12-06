@@ -10,21 +10,34 @@ const ChatLayout = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const location = useLocation();
 
+  const handleSelectContact = (contact) => {
+    console.log('Selected Contact in ChatLayout:', contact);
+    setSelectedContact(contact);
+    // console.log(selectedContact,"selected contact")
+    setSelectedGroup(null)
+  };
+
+  const handleSelectGroup = (group) => {
+    setSelectedGroup(group);
+    setSelectedContact(null)
+  };
+
   return (
     <div className="chat-layout">
-      <div className="chat-content">
+      <div className='chat-content'>
         {/* Main content area */}
         <Routes>
-          <Route path="chats" element={<Chat setSelectedContact={setSelectedContact} />} />
-          <Route path="groups" element={<Groupchat setSelectedGroup={setSelectedGroup} />} />
+          <Route path="chats" element={<Chat onSelectContact={handleSelectContact} />} />
+  
+          <Route path="groups" element={<Groupchat onSelectGroup={handleSelectGroup} />} />
         </Routes>
       </div>
 
-      <div className="chat-view">
+      <div className='chat-view '>
         {/* Display chat view for selected contact or group */}
-        {location.pathname.includes('chats') && !selectedContact && <div>Select a contact to chat</div>}
+        {location.pathname.includes('chats') && !selectedContact }
         {location.pathname.includes('groups') && !selectedGroup && <div>Select a group to chat</div>}
-        <ChatView selectedContact={selectedContact} selectedGroup={selectedGroup} />
+        <ChatView contact={selectedContact} selectedGroup={selectedGroup} />
       </div>
     </div>
   );

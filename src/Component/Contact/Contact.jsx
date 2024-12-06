@@ -36,10 +36,10 @@ const Contact = ({setView}) => {
 
         const data = {
             authId: authId,
-            profileId:profileId,
             contact_name: con_name,
             contact_number: con_number
         }
+        console.log(data,"Contact Data")
         axios.post('http://127.0.0.1:4001/Contact/add/', data)
             .then(response => {
                 console.log(response.data)

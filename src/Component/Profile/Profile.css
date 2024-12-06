@@ -7,24 +7,32 @@
   border-radius: 15px; 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
   z-index: 1; 
+
+  z-index: 1;
+  width: 90%; /* Set width to 90% of the parent container */
+  max-width: 400px; /* Max width of the card */
+  margin: 0 auto; /* Center the card horizontally */
 }
 
  .profile-pic-container {
       position: relative;
       display: inline-block;
-      width: 50px;
-      height: 50px;
+      /* width: 100px;
+      height: 100px; */
       border-radius: 50%;
       overflow: hidden;
       border: 1px solid #ccc;
       cursor: pointer;
-      margin: 0 auto;
+      /* margin: 0 auto; */
+
+      margin: 20px auto;
+
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /*  optional: subtle shadow for effect */
     } 
 
 
     .picwid {
-      width: 350px;
+      width: 50vh;
     }
     
    .profile-pic {
@@ -91,8 +99,136 @@ label {
   border-radius: 5px; /* Rounds the corners */
 }
 
+.InputEmoji__picker {
+  position: absolute !important;
+  bottom: 60px !important; /* Adjust this value as needed to position it above */
+  z-index: 1000; /* Ensure it stays above other elements */
+  transform: translateY(-100%); /* Moves the picker completely above */
+}
 
+.InputEmoji__wrapper {
+  position: relative; /* Ensure the picker is positioned relative to the input */
+}
 
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .card {
+    /* width: 85%; Card takes up most of the screen */
+    max-width: 280px; /* Limit width to 350px on smaller screens */
+    /* max-height: 700px; */
+    padding: 10px; /* Adjust padding for mobile */
+  }
+
+  .profile-pic-container {
+    width: 60px; /* Smaller profile picture size for mobile */
+    height: 60px;
+  }
+
+  .profile-pic {
+    width: 100%;
+    height: 100%;
+  }
+
+  .infield {
+    font-size: 15px; /* Smaller font size for mobile devices */
+    padding: 5px;
+  }
+
+  button {
+    font-size: 12px; /* Smaller font size for buttons */
+    padding: 10px;
+  }
+
+  .success-message, .error-message {
+    font-size: 1em; /* Adjust font size of messages */
+    padding: 9px;
+  }
+}
+
+/* Tablet (600px and above) */
+@media (max-width: 600px) and (min-width: 481px) {
+  .card {
+    /* width: 90%; Card takes up 85% of screen on tablets */
+    max-width: 330px; /* Max width for tablets */
+    padding: 20px; /* Adjust padding for tablet */
+  }
+
+  .profile-pic-container {
+    width: 70px; /* Slightly larger profile picture for tablet */
+    height: 70px;
+  }
+
+  .infield {
+    font-size: 15px; /* Adjust font size for readability */
+    padding: 10px;
+  }
+
+  button {
+    font-size: 15px; /* Adjust button size for tablet */
+    padding: 12px;
+  }
+
+  .success-message, .error-message {
+    font-size: 1.1em;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 601px) and (min-width: 678px) {
+  .card {
+    /* width: 90%; Card takes up 85% of screen on tablets */
+    max-width: 400px; /* Max width for tablets */
+    padding: 20px; /* Adjust padding for tablet */
+  }
+
+  .profile-pic-container {
+    width: 70px; /* Slightly larger profile picture for tablet */
+    height: 70px;
+  }
+
+  .infield {
+    font-size: 15px; /* Adjust font size for readability */
+    padding: 10px;
+  }
+
+  button {
+    font-size: 15px; /* Adjust button size for tablet */
+    padding: 12px;
+  }
+
+  .success-message, .error-message {
+    font-size: 1.1em;
+    padding: 12px;
+  }
+}
+
+@media (min-width: 679px) {
+  .card {
+    /* width: 90%; Card takes up 85% of screen on tablets */
+    max-width: 450px; /* Max width for tablets */
+    padding: 20px; /* Adjust padding for tablet */
+  }
+
+  .profile-pic-container {
+    width: 70px; /* Slightly larger profile picture for tablet */
+    height: 70px;
+  }
+
+  .infield {
+    font-size: 15px; /* Adjust font size for readability */
+    padding: 10px;
+  }
+
+  button {
+    font-size: 15px; /* Adjust button size for tablet */
+    padding: 12px;
+  }
+
+  .success-message, .error-message {
+    font-size: 1.1em;
+    padding: 12px;
+  }
+}
     
 
 

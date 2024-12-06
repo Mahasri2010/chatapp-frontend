@@ -54,30 +54,33 @@ const Profile = ({ setView }) => {
       return;
     }
 
-
     axios.post('http://127.0.0.1:4001/Profile/add', profileData)
       .then((response) => {
-        console.log(response.data.profile); // The profile data sent from the backend
-        localStorage.setItem('profileId',response.data.profile._id)
+        localStorage.setItem('profileId', response.data.newProfile._id)
 
-            // Update status and last seen after profile setup
-            axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.profile._id}`, {
-              online: true,
-              lastSeen: null
-            })
-            .then(() => {
-
-              setSuccessMessage('Contact saved  successfully!');
-              setTimeout(() => {
-                navigate('/app/chats');
-                setView(true);
-              }, 2000);
-            })
-            .catch((error) => {
-              console.error('Error updating status:', error);
-              setErrorMessage('Profile saved, but there was an issue updating online status.');
-            });
+        // Update status and last seen after profile setup
+        axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.newProfile._id}`, {
+          online: true,
+          lastSeen: null
         })
+          .then(() => {
+
+            setSuccessMessage('Profile saved successfully!');
+            setTimeout(() => {
+              navigate('/app/chats');
+              setView(true);
+            }, 2000);
+          })
+          .catch((error) => {
+            console.error('Error updating status:', error);
+            setErrorMessage('Profile saved, but there was an issue updating online status.');
+          });
+
+        console.log(response.data, "/profile/add/")
+
+        // console.log(response.data.profile); // The profile data sent from the backend
+        // localStorage.setItem('profileId',response.data.profile._id)
+      })
       .catch((error) => {
         console.error('Error saving profile:', error);
         setErrorMessage('There was an error saving your profile. Please try again.');
@@ -90,7 +93,7 @@ const Profile = ({ setView }) => {
 
   // const Submit = async (event) => {
   //   event.preventDefault();
-  
+
   //   // clear previous message
   //   setSuccessMessage('');
   //   setErrorMessage('');
@@ -100,7 +103,7 @@ const Profile = ({ setView }) => {
   //       setErrorMessage("User ID is missing. Please check your login status.");
   //       return;
   //   }
-  
+
   //   const profileData = {
   //     profilePicture: base64String,
   //     name: name,
@@ -109,21 +112,21 @@ const Profile = ({ setView }) => {
   //     authId: authId,
   //     // isRegistered: true  // Explicitly set this field to true
   //   };
-  
+
   //   if (!name.trim() || !phone.trim()) {
   //     alert('Please fill out all required fields.');
   //     return;
   //   }
 
   //   console.log("first")
-  
+
   //   axios.post('http://127.0.0.1:4001/Profile/add', profileData)
   //     .then((response) => {
   //       console.log(response.data.profile,"Profile"); // The profile data sent from the backend
   //       localStorage.setItem('profileId',response.data.profile._id)
-  
+
   //       const { isRegistered } = response.data.profile; // Assuming backend returns isRegistered in response
-  
+
   //       // If the profile is registered, proceed with status update and navigation
   //       if (isRegistered) {
   //         axios.patch(`http://127.0.0.1:4001/Profile/status/${response.data.profile._id}`, {
@@ -154,7 +157,7 @@ const Profile = ({ setView }) => {
   //       }
   //     })
   // };
-  
+
 
 
   useEffect(() => {
@@ -172,6 +175,11 @@ const Profile = ({ setView }) => {
 
   }, [authId])
 
+  const profileStyle = {
+    width: '100px',
+    height: '100px'
+  }
+
 
   return (
 
@@ -179,16 +187,16 @@ const Profile = ({ setView }) => {
     <div className='profile d-flex justify-content-center align-items-center vh-100'>
       <div className='card p-4 shadow picwid'>
 
-        {successMessage && <p className="success-message">{successMessage}</p>}
+        
 
         <h3 className='text-center'>Profile Setup</h3>
 
         {/* Display success and error messages */}
-
+        {successMessage && <p className="success-message">{successMessage}</p>}
         {errorMessage && <p className="text-danger text-center">{errorMessage}</p>}
 
         <div className='mb-3 mt-3 text-center'>
-          <div className='profile-pic-container'>
+          <div className='profile-pic-container' style={profileStyle}>
             {base64String ? (
               <img src={base64String} alt="Profile" className='profile-pic' />
             ) : (
@@ -206,7 +214,7 @@ const Profile = ({ setView }) => {
           />
         </div>
 
-        <div className='mb-3'>
+        <div className='mb-3' style={{position:"relative"}}>
           <label htmlFor="">Name</label>
           <InputEmoji
             type="text"
@@ -241,7 +249,7 @@ const Profile = ({ setView }) => {
           />
         </div>
 
-        <button type='submit' className='btn btn-success' onClick={Submit}>
+        <button type='submit' className='btn btn-primary' onClick={Submit}>
           Save
         </button>
       </div>

@@ -1,3 +1,15 @@
+.InputEmoji__picker {
+  position: absolute !important;
+  bottom: 60px !important; /* Adjust this value as needed to position it above */
+  z-index: 1000; /* Ensure it stays above other elements */
+  transform: translateY(-100%); /* Moves the picker completely above */
+}
+
+.InputEmoji__wrapper {
+  position: relative; /* Ensure the picker is positioned relative to the input */
+}
+
+
 .nav {
   background-color: #ffffff; /*White background */
   border: px solid; /* Adjust thickness as needed */
@@ -5,16 +17,12 @@
   /* border-image: linear-gradient(to right, #6a11cb, #2575fc) 1;  */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
   /* border-radius: 20px; */
-  
-  
+
 }
 
 .nav a:hover {
   color: #6a11cb; /* Matches gradient color */
 }
-
-
-
 
 /* Navbar container */
 .navbar-container {
@@ -179,6 +187,7 @@
 .modal-dialog {
   max-width: 400px;
   margin: auto;
+  max-height: 400px;
 }
 
 .modal-content {
@@ -186,6 +195,7 @@
   padding: 10px;
   max-height: 90vh;
   overflow: hidden;
+  font-size: 12.9px;
 }
 .modal-title {
   color: black;
@@ -198,7 +208,80 @@
   justify-content: center;
   overflow: hidden;
   gap: 10px;
-  width:120px;
-  height:120px;
+  width:90px;
+  height:90px;
   margin: 0 auto;
 }
+
+.success{
+  /* position: absolute; Keeps it from pushing other content  */
+  margin: 0;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  color: green;
+  font-weight: bold;
+}
+
+
+/* Media Query for screens between 320px - 480px (Small Screens) */
+/* @media (min-width: 320px) and (max-width: 480px) {
+  .navbar-container {
+    position: fixed;
+    bottom: 0;
+    top: auto; /* Remove top positioning */
+    /* width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 20px;
+  } */
+
+  /* .navbar-top {
+    display: none; /* Hide the menu icon for this screen size */
+  /* }  */
+
+  /* .navbar-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .navbar-item {
+    flex: 1;
+    text-align: center;
+  } */
+
+  /* .navbar-container.expanded .navbar-items {
+    flex-direction: row; /* Keep the expanded items horizontal */
+  /* } */ 
+
+  /* .navbar-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: black;
+  }
+
+  .navbar-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .settings-logout {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 15px;
+    position: absolute;
+    bottom: 80px;
+  }
+
+  .profile-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+}  */

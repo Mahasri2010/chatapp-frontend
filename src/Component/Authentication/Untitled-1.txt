@@ -1349,3 +1349,397 @@ const ChatView = ({ contact, authId }) => {
 export default ChatView;
 
 
+/* Mobile responsiveness (480px and below) */
+@media screen and (max-width: 480px) {
+    .picwid {
+      width: 100%; /* Card should take full width */
+    }
+  
+    /* Smaller profile picture */
+    .profile-pic-container {
+      width: 70px;
+      height: 70px;
+    }
+  
+    /* Adjust margins and padding for mobile */
+    .card {
+      padding: 20px; /* Reduce padding on smaller screens */
+      max-width: 5px; 
+    }
+  
+    .infield {
+      font-size: 14px; /* Slightly smaller font size */
+      padding: 8px;
+    }
+  
+    button {
+      font-size: 14px; /* Adjust button font size */
+      padding: 10px;
+    }
+  
+    .profile-pic {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Keep the image fitting nicely in the circle */
+    }
+  
+    /* Stack fields vertically */
+    .mb-3 {
+      width: 100%; /* Ensure fields are not squished */
+    }
+  
+    .file-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+
+
+
+
+
+  
+/* Mobile (480px and below) */
+@media screen and (max-width: 480px) {
+  .card {
+    width: 80%;
+    /* Card takes up most of the screen */
+    max-width: 350px;
+    /* Limit width to 350px on smaller screens */
+    padding: 15px;
+    /* Adjust padding for mobile */
+  }
+
+  .profile-pic-container {
+    width: 80px;
+    /* Smaller profile picture size for mobile */
+    height: 80px;
+  }
+
+  .profile-pic {
+    width: 100%;
+    height: 100%;
+  }
+
+  .infield {
+    font-size: 14px;
+    /* Smaller font size for mobile devices */
+    padding: 8px;
+  }
+
+  button {
+    font-size: 14px;
+    /* Smaller font size for buttons */
+    padding: 10px;
+  }
+
+  .success-message,
+  .error-message {
+    font-size: 1em;
+    /* Adjust font size of messages */
+    padding: 10px;
+  }
+}
+
+/* Tablet (769px and above) */
+@media screen and (max-width: 769px) and (min-width: 481px) {
+  .card {
+    width: 85%;
+    /* Card takes up 85% of screen on tablets */
+    max-width: 500px;
+    /* Max width for tablets */
+    padding: 20px;
+    /* Adjust padding for tablet */
+  }
+
+  .profile-pic-container {
+    width: 90px;
+    /* Slightly larger profile picture for tablet */
+    height: 90px;
+  }
+
+  .infield {
+    font-size: 15px;
+    /* Adjust font size for readability */
+    padding: 10px;
+  }
+
+  button {
+    font-size: 15px;
+    /* Adjust button size for tablet */
+    padding: 12px;
+  }
+
+  .success-message,
+  .error-message {
+    font-size: 1.1em;
+    padding: 12px;
+  }
+}
+
+/* Desktop Devices */
+@media (min-width: 1025px) {
+  .chatlist-container {
+    margin-left: 75px;
+  }
+
+  .search-bar {
+    width: 80%;
+    padding: 10px;
+  }
+
+  .contact-item {
+    padding: 16px 20px;
+  }
+
+  .start-chat-button, .invite-button {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+}
+
+/* Tablet Devices (Portrait and Landscape) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .chatlist-container {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .search-bar {
+    width: 75%;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .add-contact-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .contact-item {
+    padding: 15px 12px;
+  }
+
+  .contact-details h4 {
+    font-size: 18px;
+  }
+
+  .contact-details p {
+    font-size: 14px;
+  }
+
+  .start-chat-button, .invite-button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-dialog {
+    margin-top: 50px;
+  }
+
+  .contact-list {
+    padding: 10px;
+  }
+}
+
+
+// if neede important
+import React, { useState, useEffect, useRef } from 'react';
+import InputEmoji from 'react-input-emoji';
+import axios from 'axios';
+import { format, parseISO } from 'date-fns';
+import './ChatView.css';
+
+const ChatView = ({ contact }) => {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [onlineStatus, setOnlineStatus] = useState('');
+  const [chatId, setChatId] = useState(null);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editedName, setEditedName] = useState('');
+  const [editedNumber, setEditedNumber] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const messageContainerRef = useRef(null);
+
+  const authId = localStorage.getItem('authId');
+  const profileId = localStorage.getItem('profileId');
+
+  useEffect(() => {
+    if (contact) {
+      setOnlineStatus(contact.online ? 'Online' : `Last seen at ${contact.lastSeen}`);
+      setEditedName(contact.name || '');
+      setEditedNumber(contact.number || '');
+      fetchChatAndMessages();
+    }
+  }, [contact]);
+
+  useEffect(() => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const fetchChatAndMessages = async () => {
+    if (!contact || !authId) return;
+
+    try {
+      const { profileId: receiverProfileId } = contact;
+      const chatResponse = await axios.get(`http://127.0.0.1:4001/Chat/specific/${profileId}/${receiverProfileId}`);
+
+      if (chatResponse.data) {
+        setChatId(chatResponse.data._id);
+        const messagesResponse = await axios.get(`http://127.0.0.1:4001/Chat/Message/specific/${chatResponse.data._id}`);
+        setMessages(messagesResponse.data || []);
+      } else {
+        const newChatResponse = await axios.post('http://127.0.0.1:4001/Chat/newchat', {
+          senderId: authId,
+          receiverId: receiverProfileId,
+        });
+
+        if (newChatResponse.data) {
+          setChatId(newChatResponse.data._id);
+          setMessages([]);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching or creating chat:', error);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!chatId || !newMessage.trim()) return;
+
+    try {
+      const messageResponse = await axios.post('http://127.0.0.1:4001/Chat/Message/send', {
+        chatId,
+        senderId: profileId,
+        receiverId: contact.profileId,
+        content: newMessage,
+        timestamp: new Date().toISOString(),
+      });
+
+      setMessages((prev) => [...prev, messageResponse.data]);
+      setNewMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
+
+  const toggleDropdown = () => setIsDropdownVisible((prev) => !prev);
+
+  const handleDropdownActions = (action) => {
+    setIsDropdownVisible(false);
+    switch (action) {
+      case 'viewContact':
+        setIsModalVisible(true);
+        break;
+      case 'editContact':
+        setIsEditModalVisible(true);
+        break;
+      case 'clearChat':
+        clearChat();
+        break;
+      case 'blockContact':
+        toggleBlockContact();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const clearChat = async () => {
+    if (!window.confirm('Are you sure you want to clear this chat?')) return;
+    try {
+      await axios.delete(`http://127.0.0.1:4001/Chat/clear/${chatId}`);
+      setMessages([]);
+    } catch (error) {
+      console.error('Error clearing chat:', error);
+    }
+  };
+
+  const toggleBlockContact = async () => {
+    const isBlocking = !contact.blocked;
+    if (!window.confirm(`Are you sure you want to ${isBlocking ? 'block' : 'unblock'} this contact?`)) return;
+
+    try {
+      const url = `http://127.0.0.1:4001/Contact/${isBlocking ? 'block' : 'unblock'}`;
+      await axios.post(url, { contactId: contact._id });
+      setOnlineStatus(isBlocking ? 'Blocked' : contact.online ? 'Online' : `Last seen at ${contact.lastSeen}`);
+    } catch (error) {
+      console.error(`Error ${isBlocking ? 'blocking' : 'unblocking'} contact:`, error);
+    }
+  };
+
+  const formatLastSeen = (timestamp) => {
+    const date = parseISO(timestamp);
+    const now = new Date();
+    const timeDifference = now - date;
+
+    if (timeDifference < 24 * 60 * 60 * 1000) return `Last seen today at ${format(date, 'hh:mm a')}`;
+    if (timeDifference < 48 * 60 * 60 * 1000) return `Last seen yesterday at ${format(date, 'hh:mm a')}`;
+    return `Last seen on ${format(date, 'MMM dd, yyyy')} at ${format(date, 'hh:mm a')}`;
+  };
+
+  return (
+    <div className="chat-view">
+      {contact ? (
+        <>
+          <div className="chat-header">
+            <img src={contact.profilePicture} alt="Profile" className="profile-picture" />
+            <div className="contact-info">
+              <p className="contact-name">{contact.contact_name}</p>
+              <p className="online-status">
+                {onlineStatus === 'Blocked' ? (
+                  <span className="blocked-message">You have blocked this contact.</span>
+                ) : (
+                  onlineStatus
+                )}
+              </p>
+            </div>
+            <button onClick={toggleDropdown} className="three-dot-menu">⋮</button>
+            {isDropdownVisible && (
+              <div className="dropdown-menu">
+                <button onClick={() => handleDropdownActions('viewContact')}>View Contact</button>
+                <button onClick={() => handleDropdownActions('editContact')}>Edit Contact</button>
+                <button onClick={() => handleDropdownActions('clearChat')}>Clear Chat</button>
+                <button onClick={() => handleDropdownActions('blockContact')}>
+                  {contact.blocked ? 'Unblock' : 'Block'} Contact
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="messages-container" ref={messageContainerRef}>
+            {messages.length > 0 ? (
+              messages.map((msg) => (
+                <div key={msg._id} className={`message ${msg.senderId === profileId ? 'sent' : 'received'}`}>
+                  <p>{msg.content}</p>
+                </div>
+              ))
+            ) : (
+              <p>No messages yet.</p>
+            )}
+          </div>
+          <div className="input-container">
+            <InputEmoji value={newMessage} onChange={setNewMessage} onEnter={handleSendMessage} />
+            <button onClick={handleSendMessage} className="send-button">Send</button>
+          </div>
+        </>
+      ) : (
+        <p>No contact selected.</p>
+      )}
+    </div>
+  );
+};
+
+export default ChatView;

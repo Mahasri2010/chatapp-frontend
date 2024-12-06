@@ -24,85 +24,128 @@ const Login = ({ setView }) => {
     setErrorMessage('')
   };
 
+  // const handleLogin = async (event) => {
+  //   event.preventDefault();
+
+  //   // clear previous message
+  //   setSuccessMessage('')
+  //   setErrorMessage('')
+
+  //   // Check for empty fields
+  //   if (!email || !password) {
+  //     setErrorMessage('Email and password are required.');
+  //     return;
+  //   }
+
+  //   // // Check password length
+  //   if (password.length !== 4) {
+  //     setErrorMessage('Password must be at least 4 characters long.');
+  //     return;
+  //   }
+
+  //   // Check email validity
+  //   if (!validateEmail(email)) {
+  //     setErrorMessage('Please enter a valid email.');
+  //     return; // Prevent further execution if email is invalid
+  //   }
+
+  //   const user_data = { email, password };
+  //   axios.post('http://127.0.0.1:4001/Auth/login/', user_data)
+  //     .then(response => {
+
+  //       // Add this line to log the response data
+  //       console.log("Login Response Data:", response.data);
+
+  //       if (response.data.status) {
+  //         localStorage.setItem('Bearer', response.data.access_token);
+  //         localStorage.setItem('refresh_token', response.data.refresh_token);
+  //         localStorage.setItem('authId', response.data.userdata._id);
+  //         localStorage.setItem('profileId', response.data.userdata.profileId)
+
+
+  //         // Update online status
+  //               axios.patch(
+  //                 `http://127.0.0.1:4001/Profile/status/${response.data.userdata.profileId}`,
+  //                 { online: true, lastSeen: null },
+  //               );
+                
+
+  //         setSuccessMessage('Logged in successfully!');
+  //         setTimeout(() => {
+  //           navigate('/app/chats');
+  //           setView(true);
+  //         }, 2000);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       if (error.response) {
+  //         setErrorMessage(error.response.data.message || 'An error occurred. Please try again.');
+  //       } else {
+  //         setErrorMessage('An error occurred. Please try again.');
+  //       }
+  //     });
+  // };
+
   const handleLogin = async (event) => {
     event.preventDefault();
-
+  
     // clear previous message
-    setSuccessMessage('')
-    setErrorMessage('')
-
+    setSuccessMessage('');
+    setErrorMessage('');
+  
     // Check for empty fields
     if (!email || !password) {
       setErrorMessage('Email and password are required.');
       return;
     }
-
+  
     // // Check password length
     if (password.length !== 4) {
       setErrorMessage('Password must be at least 4 characters long.');
       return;
     }
-
+  
     // Check email validity
     if (!validateEmail(email)) {
       setErrorMessage('Please enter a valid email.');
       return; // Prevent further execution if email is invalid
     }
-
+  
     const user_data = { email, password };
     axios.post('http://127.0.0.1:4001/Auth/login/', user_data)
       .then(response => {
-
-        // Add this line to log the response data
-        console.log("Login Response Data:", response.data);
-
+        // console.log("Login Response Data:", response.data);
+  
         if (response.data.status) {
           localStorage.setItem('Bearer', response.data.access_token);
           localStorage.setItem('refresh_token', response.data.refresh_token);
           localStorage.setItem('authId', response.data.userdata._id);
-
-          setSuccessMessage('Logged in successfully!');
-          setTimeout(() => {
-            navigate('/app/chats');
-            setView(true);
-          }, 2000);
-
-          // const userId = response.data.userdata._id;
-
-          // console.log(userId, "UserId")
-          // // localStorage.setItem('userId', userId);
-          // // Update online status
-          // axios.patch(`http://127.0.0.1:4001/Profile/status/${userId}`, {online: true})
-          //   .then(() => {
-          //     console.log("response")
-          //     setSuccessMessage('Logged in successfully!');
-          //     setTimeout(() => {
-          //       navigate('/app/chats');
-          //       setView(true);
-          //     }, 2000);
-          //   })
-          //   .catch(err => {
-          //     console.error('Error updating online status:', err);
-          //     setErrorMessage('Profile Update failed.')
-          //   });
-
-
-
-
-          // Update Online status to true 
-          // useEffect(() => {
-          //   const userId = localStorage.getItem('userId');
-          //   if (userId) {
-          //     axios.patch(`http://127.0.0.1:4001/Profile/status/${userId}`, { online: true })
-          //       .then(() => {
-          //         console.log("Online status updated to true.");
-          //       })
-          //       .catch(error => {
-          //         console.error("Error updating online status:", error);
-          //       });
-          //   }
-          // }, []);
-
+          localStorage.setItem('profileId', response.data.userdata.profileId);
+  
+          // Update online status
+          axios.patch(
+            `http://127.0.0.1:4001/Profile/status/${response.data.userdata.profileId}`,
+            { online: true }
+          )
+          .then(statusResponse => {
+            console.log("Status Update Response:", statusResponse.data);
+  
+            if (statusResponse.data.message === "Status updated.") {
+              // You can update the state or do something else here if necessary
+              // setSuccessMessage('Logged in successfully and status updated!');
+              setSuccessMessage('Logged in successfully');
+            } else {
+              setErrorMessage('Failed to update status.');
+            }
+  
+            setTimeout(() => {
+              navigate('/app/chats');
+              setView(true);
+            }, 2000);
+          })
+          .catch(error => {
+            setErrorMessage('Failed to update status.');
+          });
         }
       })
       .catch(error => {
@@ -113,6 +156,7 @@ const Login = ({ setView }) => {
         }
       });
   };
+  
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -144,7 +188,7 @@ const Login = ({ setView }) => {
           setSuccessMessage('Signed up successfully!');
           setTimeout(() => {
             navigate('/Profile');
-            setView(true);
+            // setView(true);
           }, 2000);
         } else {
           // Display backend error message
@@ -177,11 +221,16 @@ const Login = ({ setView }) => {
     return () => clearInterval(interval);
   }, []);
 
+  const cardStyles = {
+    // width: '90%',
+    maxWidth: '400px',
+    margin: '0 auto',
+  };
 
 
   return (
     <div className='login d-flex justify-content-center align-items-center vh-100'>
-      <div className='animate card p-4 shadow' style={{ minWidth: '400px', maxWidth: '500px', borderRadius: '15px' }}>
+      <div className='animate card p-4 shadow ' style={cardStyles}>
         <h2 className='text-center'>{isLogin ? 'Login' : 'Sign Up'}</h2>
 
 

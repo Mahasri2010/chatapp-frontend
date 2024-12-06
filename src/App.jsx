@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import axios from 'axios';
 import { Routes, Route } from 'react-router-dom';
 import Login from './Component/Authentication/Login';
 import Profile from './Component/Profile/Profile';
@@ -13,12 +14,18 @@ const App = () => {
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      localStorage.clear();     // Clear localStorage
-      const authId = localStorage.getItem('authId')
-      axios.patch(`http://127.0.0.1:4001/Profile/status/${authId}`, { online: false, lastSeen: Date.now() })
-      .then(response => {
-        console.log(response.data.message);
-      });
+      const profileId = localStorage.getItem('profileId')
+
+      // axios.patch(`http://127.0.0.1:4001/Profile/status/${profileId}`, { online: false, lastSeen: Date.now() })
+      //   .then(response => {
+      //     console.log(response.data.message);
+      //   })
+      //   .catch(error => {
+      //     console.error(error)
+      //   })
+
+      // localStorage.clear();     // Clear localStorage
+
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -41,7 +48,7 @@ const App = () => {
 
         {/* Profile Route without Chat Layout */}
         <Route path='/Profile' element={<Profile setView={setView} />} />
-        <Route path='/Contact' element={<Contact setView={setView}/>} />
+        <Route path='/Contact' element={<Contact setView={setView} />} />
 
       </Routes>
     </div>

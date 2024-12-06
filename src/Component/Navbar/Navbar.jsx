@@ -24,6 +24,8 @@ const Navbar = ({ setView }) => {
   const [showModal, setShowModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);  // Add loading state
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('')
 
   // Fetch profile data for the specific user
   useEffect(() => {
@@ -32,13 +34,15 @@ const Navbar = ({ setView }) => {
       axios.get(`http://127.0.0.1:4001/Profile/get/${authId}`)
         .then(response => {
           console.log(response.data, "Profile")
-          console.log(response.data.profileId,"ID")
-          localStorage.setItem(response.data.profileId,'profileId')
+          // console.log(response.data.profileId,"ID")
+          // localStorage.setItem(response.data.profileId,'profileId')
           setProfileData(response.data); // Set specific user's data
           setIsLoading(false); // Once data is fetched, set loading to false
         })
-        .catch(error => console.error('Error fetching user profile:', error));
-      setIsLoading(false);
+        .catch(error => {
+          console.error('Error fetching user profile:', error);
+          setIsLoading(false); // Ensure it stops loading on error
+        });
     }
   }, [authId]);
 
@@ -59,7 +63,10 @@ const Navbar = ({ setView }) => {
     }
   };
 
-  const handleShowModal = useCallback(() => setShowModal(true), []);
+  const handleShowModal = useCallback(() => {
+    setSuccessMessage(" "),
+      setShowModal(true)
+  }, []);
   const handleCloseModal = useCallback(() => setShowModal(false), []);
 
   const handleLogout = () => {
@@ -70,16 +77,19 @@ const Navbar = ({ setView }) => {
         console.log(response.data.message);
       });
 
-    axios.patch(`http://127.0.0.1:4001/Profile/status/${authId}`, { online: false, lastSeen: Date.now() })
+    axios.patch(`http://127.0.0.1:4001/Profile/status/${profileId}`, { online: false, lastSeen: Date.now() })
       .then(response => {
         console.log(response.data.message);
-      });
+      })
+      .catch(error => {
+        console.error(error)
+      })
 
     localStorage.removeItem('authId');
     localStorage.removeItem('profileId')
     localStorage.removeItem('Bearer');
     localStorage.removeItem('refresh_token');
-    navigate('/login');
+    // navigate('/login');
     setView(false)
   };
 
@@ -95,6 +105,11 @@ const Navbar = ({ setView }) => {
 
   const handleSubmit = async event => {
     event.preventDefault();
+
+    // clear previous message
+    setSuccessMessage('')
+    setErrorMessage('')
+
     try {
       // Only send the fields that need updating, excluding authId
       const updatedProfileData = {
@@ -106,7 +121,13 @@ const Navbar = ({ setView }) => {
 
       // Send a PATCH request to update the profile, using only the updated fields
       await axios.patch(`http://127.0.0.1:4001/Profile/update/${authId}`, updatedProfileData);
-      handleCloseModal();
+
+      setSuccessMessage("Profile updated Successfully")
+      setTimeout(() => {
+        handleCloseModal();
+        setSuccessMessage(" ")
+      }, 2000);
+
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -154,7 +175,7 @@ const Navbar = ({ setView }) => {
       </div>
 
       {/* Profile Section */}
-      <div style={{display:'flex'}}>
+      <div style={{ display: 'flex' }}>
         <div className="profile-pic-container">
           <img
             src={profileData.profilePicture}
@@ -170,14 +191,21 @@ const Navbar = ({ setView }) => {
 
       {/* Modal */}
       {showModal && (
-        <div className="modal show d-block" tabIndex="-1" role="dialog" style={{ background: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal show d-block" tabIndex="-1" role="dialog" style={{ background: 'rgba(0,0,0,0.5)',maxHeight:'1000px'}}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
-              <div className="modal-header">
+              <div className="modal-header" style={{ minHeight: '50px' }}>
                 <h5 className="modal-title">Profile Details</h5>
                 <button type="button" className="btn-close" onClick={handleCloseModal} aria-label="Close"></button>
               </div>
-              <div className="modal-body">
+              <div className="modal-body" >
+
+                {/* Display success message if present */}
+                 {successMessage && <p className="success" style={{ minHeight: '20px' }}>{successMessage}</p>} 
+
+                {/* Display error message if present */}
+                 {errorMessage && <p className="error-message text-danger text-center" style={{ minHeight: '20px' }}>{errorMessage}</p>} 
+
                 <form>
                   <div className="rounded circle image-upload-container text-center">
                     <img
@@ -205,7 +233,7 @@ const Navbar = ({ setView }) => {
                     />
                   </div>
 
-                  <div className="mb-3">
+                  <div className="mb-3" style={{position:'relative'}}>
                     <label>Name</label>
                     <InputEmoji
                       type="text"
@@ -215,7 +243,7 @@ const Navbar = ({ setView }) => {
                     />
                   </div>
 
-                  <div className="mb-3">
+                  <div className="mb-3" style={{position:'relative'}}>
                     <label>About</label>
                     <InputEmoji
                       type="text"
@@ -231,13 +259,14 @@ const Navbar = ({ setView }) => {
                       type="number"
                       className="form-control"
                       value={profileData.phone}
+                      style={{fontSize:'15px',fontWeight:'490',width:'85%'}}
                       onChange={e => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
                     />
                   </div>
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-success" onClick={handleSubmit}>
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>
                   Save Changes
                 </button>
               </div>
